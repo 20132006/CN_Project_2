@@ -17,10 +17,6 @@
 
 
 //added by Alibek
-
-#define IP_V(ip)	(((ip)->ver_ihl & 0xf0) >> 4)
-#define IP_HL(ip)	((ip)->ver_ihl & 0x0f)
-
 /* 4 bytes IP address */
 typedef struct ip_address{
     u_char byte1;
@@ -59,8 +55,6 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     int chcnt =0;
     int length=pkthdr->len;
 
-    //printf("%u\n",iph->ip_v);
-
     //Get the ethernet header.
     ep = (struct ether_header *)packet;
 
@@ -70,13 +64,19 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     //Get a protocol type.
     ether_type = ntohs(ep->ether_type);
 
+
+//Write code2.
+//If the packet is IP packet and the source or destination address is same as the IP address of Raspberry Pi,
+//print out the packet information(version, header length, identification, time to live,
+//source and destination address).
+
     ip_header *ih;
 
     /* retireve the position of the ip header */
-    ih = (ip_header *) packet; //14 length of ethernet header
+    ih = (ip_header *) packet;
 
     struct ip *iph = (struct ip *)packet;
-    
+
     if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
         (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
     {
@@ -94,14 +94,8 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
           ih->daddr.byte2,
           ih->daddr.byte3,
           ih->daddr.byte4);
-
     }
-//Write code2.
-//If the packet is IP packet and the source or destination address is same as the IP address of Raspberry Pi,
-//print out the packet information(version, header length, identification, time to live,
-//source and destination address).
-
-
+    printf("\n\n", );
 }
 
 int main(int argc, char **argv)
@@ -192,18 +186,3 @@ int main(int argc, char **argv)
   	printf("\nCapture complete.\n");
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//

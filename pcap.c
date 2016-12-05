@@ -14,6 +14,16 @@
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
 #include <netinet/ip_icmp.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h> /* for strncpy */
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <net/if.h>
+#include <arpa/inet.h>
 
 
 //added by Alibek
@@ -70,6 +80,24 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
 //print out the packet information(version, header length, identification, time to live,
 //source and destination address).
 
+    int fd;
+    struct ifreq ifr;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+
+    /* I want to get an IPv4 IP address */
+    ifr.ifr_addr.sa_family = AF_INET;
+
+    /* I want IP address attached to "eth0" */
+    strncpy(ifr.ifr_name, "eth0", IFNAMSIZ-1);
+
+    ioctl(fd, SIOCGIFADDR, &ifr);
+
+    close(fd);
+
+    /* display result */
+    printf("%s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+
     ip_header *ih;
 
     /* retireve the position of the ip header */
@@ -77,14 +105,18 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
 
     struct ip *iph = (struct ip *)packet;
 
-    if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
-        (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
+
+
+    //if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
+    //    (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
+    if (inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr) == inet_ntoa(iph->ip_src) ||
+        inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr) == inet_ntoa(iph->ip_dst))
     {
         printf("Version     : %u\n", iph->ip_v );
         printf("Header Len  : %u\n", iph->ip_hl);
         printf("Ident       : %d\n", iph->ip_id);
         printf("TTL         : %u\n", iph->ip_ttl);
-        printf("Src Address : %d.%d.%d.%d\nDst Address : %d.%d.%d.%d\n",
+        /*printf("Src Address : %d.%d.%d.%d\nDst Address : %d.%d.%d.%d\n",
             ih->saddr.byte1,
             ih->saddr.byte2,
             ih->saddr.byte3,
@@ -93,7 +125,9 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
             ih->daddr.byte1,
             ih->daddr.byte2,
             ih->daddr.byte3,
-            ih->daddr.byte4);
+            ih->daddr.byte4);*/
+        printf("Src Address : %s\n", inet_ntoa(iph->ip_src));
+    	  printf("Dst Address : %s\n", inet_ntoa(iph->ip_dst));
         printf("\n\n");
     }
 }

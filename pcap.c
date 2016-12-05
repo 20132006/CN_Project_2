@@ -59,8 +59,6 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     int chcnt =0;
     int length=pkthdr->len;
 
-    struct iphdr *iph = (struct iphdr *) (packet + sizeof(struct ether_header));
-
     printf("%u\n",iph->ip_v);
 
     //Get the ethernet header.
@@ -77,7 +75,7 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     /* retireve the position of the ip header */
     ih = (ip_header *) packet; //14 length of ethernet header
 
-    iph = (struct ip *)packet;
+    struct ip *iph = (struct ip *)packet;
 
   	/* print source and destination IP addresses */
   	printf("Version     : %u\n", iph->ip_v );

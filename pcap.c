@@ -67,8 +67,8 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     /* retireve the position of the ip header */
     ih = (ip_header *) packet; //14 length of ethernet header
 
-    if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
-        (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
+    //if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
+    //    (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
     {
       printf("Version : %s\nHearder Len : %s\nIdent : %s\nTTL : %s\n", ih->ver_ihl,
       ih->tlen,

@@ -112,7 +112,6 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     //memseit(src, '\0',sizeof(src));
     strcpy(src,inet_ntoa(iph->ip_src));
     //printf("%s\n",src);
-<<<<<<< HEAD
     char *dest;
     dest = (char *)malloc(40*sizeof(char));
     //memseit(src, '\0',sizeof(src));
@@ -120,41 +119,19 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     //printf("%s\n",src);
     char *ipaddr;
     ipaddr = (char *)malloc(40*sizeof(char));
-    strcpy(src,inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+    strcpy(ipaddr,inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
     //printf("%s\n",src)
 
-    printf("%s\n",ipaddr);
-    printf("%s\n",dest);
-    printf("%s\n",src);
+    //printf("%s\n",ipaddr);
+    ///printf("%s\n",dest);
+    //printf("%s\n",src);
 
     int res = strcmp(ipaddr,src);
-    printf("%d\n", res);
-        res = strcmp(ipaddr,dest);
-    printf("%d\n", res);
-
-=======
-
-    //char dest[40];
-    //memset(dest, '\0',sizeof(dest));
-    //strcpy(src,inet_ntoa(iph->ip_dst));
-
-    //char ipaddr[40];
-    //memset(src, '\0',sizeof(ipaddr));
-    //strcpy(dest,inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-    //printf("%s\n",dest);
-
-    //printf("%s\n",ipaddr);
-    //printf("%s\n",dest);
-    printf("%s\n",src);
-
-    //int res = strcmp(ipaddr,src);
     //printf("%d\n", res);
-    //    res = strcmp(ipaddr,dest);
+    int res1 = strcmp(ipaddr,dest);
     //printf("%d\n", res);
-    
->>>>>>> origin/master
-    if (strcmp(inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr),inet_ntoa(iph->ip_src)) == 0 &&
-        strcmp(inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr),inet_ntoa(iph->ip_dst)) == 0 )
+
+    if (!res || !res1)
     {
         printf("Version     : %u\n", iph->ip_v );
         printf("Header Len  : %u\n", iph->ip_hl);

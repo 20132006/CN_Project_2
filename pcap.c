@@ -82,8 +82,6 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
   	printf("Header Len  : %u\n", iph->ip_hl);
   	printf("Ident       : %d\n", iph->ip_id);
   	printf("TTL         : %u\n", iph->ip_ttl);
-  	printf("Src Address : %s\n", inet_ntoa(iph->ip_src));
-  	printf("Dst Address : %s\n", inet_ntoa(iph->ip_dst));
 
     //if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
     //    (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))

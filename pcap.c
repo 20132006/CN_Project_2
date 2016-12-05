@@ -15,6 +15,9 @@
 
 //added by Alibek
 
+#define IP_V(ip)	(((ip)->ver_ihl & 0xf0) >> 4)
+#define IP_HL(ip)	((ip)->ver_ihl & 0x0f)
+
 /* 4 bytes IP address */
 typedef struct ip_address{
     u_char byte1;
@@ -67,13 +70,15 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     /* retireve the position of the ip header */
     ih = (ip_header *) packet; //14 length of ethernet header
 
+    u_int hlen,version;
+
+    hlen    = IP_HL(ip); /* header length */
+    version = IP_V(ip);/* ip version */
+
     //if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
     //    (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
     {
-      printf("Version : %s\nHearder Len : %s\nIdent : %s\nTTL : %s\n", ih->ver_ihl,
-      ih->tlen,
-      ih->identification,
-      ih->ttl);
+      printf ("Version%d\nHeader Len %d\n", version, hlen);
       printf("Src Address : %d.%d.%d.%d\nDst Address : %d.%d.%d.%d\n",
           ih->saddr.byte1,
           ih->saddr.byte2,

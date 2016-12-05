@@ -67,17 +67,25 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     /* retireve the position of the ip header */
     ih = (ip_header *) packet; //14 length of ethernet header
 
-    printf("%d.%d.%d.%d -> %d.%d.%d.%d\n",
-        ih->saddr.byte1,
-        ih->saddr.byte2,
-        ih->saddr.byte3,
-        ih->saddr.byte4,
+    if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
+        (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
+    {
+      printf("Version : %s\nHearder Len : %s\nIdent : %s\nTTL : %s\n", ih->ver_ihl,
+      ih->tlen,
+      ih->identification,
+      ih->ttl);
+      printf("Src Address : %d.%d.%d.%d\nDst Address : %d.%d.%d.%d\n",
+          ih->saddr.byte1,
+          ih->saddr.byte2,
+          ih->saddr.byte3,
+          ih->saddr.byte4,
 
-        ih->daddr.byte1,
-        ih->daddr.byte2,
-        ih->daddr.byte3,
-        ih->daddr.byte4);
+          ih->daddr.byte1,
+          ih->daddr.byte2,
+          ih->daddr.byte3,
+          ih->daddr.byte4);
 
+    }
 //Write code2.
 //If the packet is IP packet and the source or destination address is same as the IP address of Raspberry Pi,
 //print out the packet information(version, header length, identification, time to live,

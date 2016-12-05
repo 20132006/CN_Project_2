@@ -89,45 +89,57 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     ifr.ifr_addr.sa_family = AF_INET;
 
     /* I want IP address attached to "eth0" */
-    strncpy(ifr.ifr_name, "eth0", IFNAMSIZ-1);
+    strncpy(ifr.ifr_name, "wlan0", IFNAMSIZ-1);
 
     ioctl(fd, SIOCGIFADDR, &ifr);
 
     close(fd);
 
     /* display result */
-    printf("%s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+    //printf("%s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
 
-    ip_header *ih;
+    //ip_header *ih;
 
     /* retireve the position of the ip header */
-    ih = (ip_header *) packet;
+    //ih = (ip_header *) packet;
 
     struct ip *iph = (struct ip *)packet;
 
-
-
     //if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
     //    (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
-    if (inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr) == inet_ntoa(iph->ip_src) ||
-        inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr) == inet_ntoa(iph->ip_dst))
+    char *src;
+    src = (char *)malloc(40*sizeof(char));
+    //memseit(src, '\0',sizeof(src));
+    strcpy(src,inet_ntoa(iph->ip_src));
+    //printf("%s\n",src);
+
+    //char dest[40];
+    //memset(dest, '\0',sizeof(dest));
+    //strcpy(src,inet_ntoa(iph->ip_dst));
+
+    //char ipaddr[40];
+    //memset(src, '\0',sizeof(ipaddr));
+    //strcpy(dest,inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+    //printf("%s\n",dest);
+
+    //printf("%s\n",ipaddr);
+    //printf("%s\n",dest);
+    printf("%s\n",src);
+
+    //int res = strcmp(ipaddr,src);
+    //printf("%d\n", res);
+    //    res = strcmp(ipaddr,dest);
+    //printf("%d\n", res);
+    
+    if (strcmp(inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr),inet_ntoa(iph->ip_src)) == 0 &&
+        strcmp(inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr),inet_ntoa(iph->ip_dst)) == 0 )
     {
         printf("Version     : %u\n", iph->ip_v );
         printf("Header Len  : %u\n", iph->ip_hl);
         printf("Ident       : %d\n", iph->ip_id);
         printf("TTL         : %u\n", iph->ip_ttl);
-        /*printf("Src Address : %d.%d.%d.%d\nDst Address : %d.%d.%d.%d\n",
-            ih->saddr.byte1,
-            ih->saddr.byte2,
-            ih->saddr.byte3,
-            ih->saddr.byte4,
-
-            ih->daddr.byte1,
-            ih->daddr.byte2,
-            ih->daddr.byte3,
-            ih->daddr.byte4);*/
         printf("Src Address : %s\n", inet_ntoa(iph->ip_src));
-    	  printf("Dst Address : %s\n", inet_ntoa(iph->ip_dst));
+    	printf("Dst Address : %s\n", inet_ntoa(iph->ip_dst));
         printf("\n\n");
     }
 }

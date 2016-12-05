@@ -120,18 +120,18 @@ int main(int argc, char **argv)
     char *filter_exp = argv[2];		/* filter expression [3] */
     pcap_t *handle;				/* packet capture handle */
 
-    printf("Number of packets %d\n", num_packets);
-    printf("Filtering expression %s\n", filter_exp);
+    //printf("Number of packets %d\n", num_packets);
+    //printf("Filtering expression %s\n", filter_exp);
 
     //Get a current device name.
     dev = pcap_lookupdev(errbuf);
-    printf("Stoped here %s\n", dev);
+    //printf("Stoped here %s\n", dev);
     if (dev == NULL)
     {
         printf("%s\n", errbuf);
         exit(1);
     }
-    printf("Stoped here\n");
+    //printf("Stoped here\n");
 
 //Write code1.
 //Open the device for sniffing using "pcap_open_live".
@@ -145,8 +145,8 @@ int main(int argc, char **argv)
         net = 0;
         mask = 0;
     }
-    printf("Device: %s\n", dev);
-    printf("Number of packets: %d\n", num_packets);
+    //printf("Device: %s\n", dev);
+    //printf("Number of packets: %d\n", num_packets);
 
     /* open capture device */
   	handle = pcap_open_live(dev, SNAP_LEN, 1, 1000, errbuf);

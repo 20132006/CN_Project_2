@@ -14,6 +14,30 @@
 #include <netinet/ip_icmp.h>
 
 //added by Alibek
+
+/* 4 bytes IP address */
+typedef struct ip_address{
+    u_char byte1;
+    u_char byte2;
+    u_char byte3;
+    u_char byte4;
+}ip_address;
+
+/* IPv4 header */
+typedef struct ip_header{
+    u_char  ver_ihl;        // Version (4 bits) + Internet header length (4 bits)
+    u_char  tos;            // Type of service
+    u_short tlen;           // Total length
+    u_short identification; // Identification
+    u_short flags_fo;       // Flags (3 bits) + Fragment offset (13 bits)
+    u_char  ttl;            // Time to live
+    u_char  proto;          // Protocol
+    u_short crc;            // Header checksum
+    ip_address  saddr;      // Source address
+    ip_address  daddr;      // Destination address
+    u_int   op_pad;         // Option + Padding
+}ip_header;
+
 /* default snap length (maximum bytes per packet to capture) */
 #define SNAP_LEN 1518
 
@@ -21,8 +45,7 @@
 struct ip *iph;
 
 //Callback function is called when the packet passes through the filter.
-void callback(u_char *useless, const struct pcap_pkthdr *pkthdr,
-                const u_char *packet)
+void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *packet)
 {
     static int count = 1;
     struct ether_header *ep;
@@ -33,11 +56,27 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr,
     //Get the ethernet header.
     ep = (struct ether_header *)packet;
 
-	//In order to get IP header, offset a size of ethernet header.
+    //In order to get IP header, offset a size of ethernet header.
     packet += sizeof(struct ether_header);
 
     //Get a protocol type.
     ether_type = ntohs(ep->ether_type);
+
+    ip_header *ih;
+
+    /* retireve the position of the ip header */
+    ih = (ip_header *) packet; //14 length of ethernet header
+
+    printf("%d.%d.%d.%d -> %d.%d.%d.%d\n",
+        ih->saddr.byte1,
+        ih->saddr.byte2,
+        ih->saddr.byte3,
+        ih->saddr.byte4,
+
+        ih->daddr.byte1,
+        ih->daddr.byte2,
+        ih->daddr.byte3,
+        ih->daddr.byte4);
 
 //Write code2.
 //If the packet is IP packet and the source or destination address is same as the IP address of Raspberry Pi,
@@ -69,15 +108,18 @@ int main(int argc, char **argv)
     char *filter_exp = argv[2];		/* filter expression [3] */
     pcap_t *handle;				/* packet capture handle */
 
-    printf("%s\n", filter_exp);
+    printf("Number of packets %d\n", num_packets);
+    printf("Filtering expression %s\n", filter_exp);
 
     //Get a current device name.
     dev = pcap_lookupdev(errbuf);
+    printf("Stoped here %s\n", dev);
     if (dev == NULL)
     {
         printf("%s\n", errbuf);
         exit(1);
     }
+    printf("Stoped here\n");
 
 //Write code1.
 //Open the device for sniffing using "pcap_open_live".

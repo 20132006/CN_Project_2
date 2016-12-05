@@ -8,10 +8,13 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include<sys/socket.h>
+#include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
 #include <netinet/ip_icmp.h>
+
 
 //added by Alibek
 
@@ -56,6 +59,10 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     int chcnt =0;
     int length=pkthdr->len;
 
+    struct iphdr *iph = (struct iphdr *) (packet + sizeof(struct ether_header));
+
+    printf("%u\n",iph->ip_v);
+
     //Get the ethernet header.
     ep = (struct ether_header *)packet;
 
@@ -70,15 +77,21 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     /* retireve the position of the ip header */
     ih = (ip_header *) packet; //14 length of ethernet header
 
-    u_int hlen,version;
+    iph = (struct ip *)packet;
 
-    hlen    = IP_HL(ih); /* header length */
-    version = IP_V(ih);/* ip version */
+  	/* print source and destination IP addresses */
+  	printf("Version     : %u\n", iph->ip_v );
+  	printf("Header Len  : %u\n", iph->ip_hl);
+  	printf("Ident       : %d\n", iph->ip_id);
+  	printf("TTL         : %u\n", iph->ip_ttl);
+  	printf("Src Address : %s\n", inet_ntoa(iph->ip_src));
+  	printf("Dst Address : %s\n", inet_ntoa(iph->ip_dst));
 
     //if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
     //    (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
     {
-      printf ("Version%d\nHeader Len %d\n", version, hlen);
+      //printf ("Version%d\nHeader Len %d\n", version, hlen);
+      //printf ("Version%d\nHeader Len %d\n", version, hlen);
       printf("Src Address : %d.%d.%d.%d\nDst Address : %d.%d.%d.%d\n",
           ih->saddr.byte1,
           ih->saddr.byte2,
@@ -187,8 +200,6 @@ int main(int argc, char **argv)
   	printf("\nCapture complete.\n");
     return 0;
 }
-
-
 
 
 

@@ -72,8 +72,8 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
 
     u_int hlen,version;
 
-    hlen    = IP_HL(ip); /* header length */
-    version = IP_V(ip);/* ip version */
+    hlen    = IP_HL(ih); /* header length */
+    version = IP_V(ih);/* ip version */
 
     //if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
     //    (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))

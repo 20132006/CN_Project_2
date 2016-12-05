@@ -95,7 +95,7 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
           ih->daddr.byte3,
           ih->daddr.byte4);
     }
-    printf("\n\n", );
+    printf("\n\n");
 }
 
 int main(int argc, char **argv)

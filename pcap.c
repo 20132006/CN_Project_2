@@ -59,7 +59,7 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     int chcnt =0;
     int length=pkthdr->len;
 
-    printf("%u\n",iph->ip_v);
+    //printf("%u\n",iph->ip_v);
 
     //Get the ethernet header.
     ep = (struct ether_header *)packet;
@@ -76,18 +76,14 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     ih = (ip_header *) packet; //14 length of ethernet header
 
     struct ip *iph = (struct ip *)packet;
-
-  	/* print source and destination IP addresses */
-  	printf("Version     : %u\n", iph->ip_v );
-  	printf("Header Len  : %u\n", iph->ip_hl);
-  	printf("Ident       : %d\n", iph->ip_id);
-  	printf("TTL         : %u\n", iph->ip_ttl);
-
-    //if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
-    //    (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
+    
+    if ((ih->saddr.byte1 == 192 && ih->saddr.byte2 == 168 && ih->saddr.byte3 == 16 && ih->saddr.byte1 == 136) ||
+        (ih->daddr.byte1 == 192 && ih->daddr.byte2 == 168 && ih->daddr.byte3 == 16 && ih->daddr.byte4 == 136))
     {
-      //printf ("Version%d\nHeader Len %d\n", version, hlen);
-      //printf ("Version%d\nHeader Len %d\n", version, hlen);
+      printf("Version     : %u\n", iph->ip_v );
+      printf("Header Len  : %u\n", iph->ip_hl);
+      printf("Ident       : %d\n", iph->ip_id);
+      printf("TTL         : %u\n", iph->ip_ttl);
       printf("Src Address : %d.%d.%d.%d\nDst Address : %d.%d.%d.%d\n",
           ih->saddr.byte1,
           ih->saddr.byte2,
